@@ -1,0 +1,30 @@
+dice_username: change_me
+dice_password: change_me
+monster_username: change_me
+monster_password: change_me
+search_terms:
+  - Linux
+  - Unix
+  - RedHat
+  - RHEL
+  - Unix Administrator
+  - Linux Administrator
+  - Unix Admin
+  - Linux Admin
+  - Linux System Administrator
+  - Unix System Administrator
+  - Linux Engineer
+  - Unix Engineer
+blocked_words:
+  - Sr
+  - Senior
+  - III
+  - C++
+  - C#
+  - .NET
+  - Java
+  - Lead
+  - Ruby
+  - Python
+  - Javascript
+  - NodeJS
