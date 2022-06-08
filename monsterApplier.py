@@ -63,8 +63,13 @@ def monsterLogin():
         driver.get(monster_login)
         email = driver.find_element_by_id('email')
         password = driver.find_element_by_id('password')
-        login = driver.find_element_by_id('email-button')
+        login = driver.find_elements_by_tag_name('button')
+        login = [ button for button in login if 'Log' in button.get_attribute('innerHTML') ][0]
+        # driver.execute_script("arguments[0].setAttribute('value',arguments[1])",email, monster_username)
+        # driver.execute_script("arguments[0].setAttribute('value',arguments[1])",password, monster_password)
+        email.click()
         email.send_keys(monster_username)
+        password.click()
         password.send_keys(monster_password)
         login.click()
         time.sleep(10)
@@ -130,12 +135,13 @@ def tryApplication(next_apply_button, job_title):
         next_submit_button = submit_buttons[0]
         next_submit_button.send_keys(Keys.ENTER)
         time.sleep(4)
-        driver.close()
-        driver.switch_to.window(driver.window_handles[0])
-        time.sleep(1)
+        if len(driver.find_elements_by_css_selector('button[data-testid=onboarding-submit-button]')) == 0:
+            driver.close()
+            driver.switch_to.window(driver.window_handles[0])
+            time.sleep(1)
 
     # in case the application form can't submit
-    if len(driver.window_handles) > 1:
+    if len(driver.window_handles) > 1 and len(driver.find_elements_by_css_selector('button[data-testid=onboarding-submit-button]')) != 0:
         close_application = driver.find_element_by_css_selector('button[data-testid=cancel-onboarding-iconbutton]')
         driver.execute_script("arguments[0].click();", close_application)
         driver.switch_to.window(driver.window_handles[0])
@@ -172,18 +178,22 @@ def monsterSearchAndApply(search_term, remote):
 
         print('...')
         apply_buttons = driver.find_elements_by_css_selector('button[data-test-id=svx-job-apply-button]')
+        # end the run if there are no results
+        if len(apply_buttons) == 0 and "We didn’t find any jobs matching your criteria" in driver.getPageSource():
+            print(f"No More Results\nTOTAL APPLICATIONS: {app_count}")
+            return
 
         # scroll lower if none left and grab next job
         while len(apply_buttons) <= skip_count:
             scrollToBottom()
             apply_buttons = driver.find_elements_by_css_selector('button[data-test-id=svx-job-apply-button]')
 
-            # end the script if there is nothing left to apply to
+            # end the run if there is nothing left to apply to
             buttons = driver.find_elements_by_tag_name("button")
             no_more_results = [ button for button in buttons if button.text == 'No More Results' ]
             if no_more_results and len(apply_buttons) >= skip_count:
-                driver.quit()
                 print(f"No More Results\nTOTAL APPLICATIONS: {app_count}")
+                return
         next_apply_button = apply_buttons[skip_count]
 
         # try to apply to job
@@ -209,7 +219,7 @@ def monsterSearchAndApply(search_term, remote):
 
 # checks if skipfile exists, creates it if not
 if not exists('./monsterUnapplied.txt'):
-    fp = open('skipfile', 'x')
+    fp = open('monsterUnapplied.txt', 'x')
     fp.close()
 
 # access file of company names to skip
@@ -227,5 +237,5 @@ for term in search_terms:
     print(f"searching for {term} jobs on Monster")
     monsterSearchAndApply(term, remote=False)
     print(f"searching for {term} remote jobs on Monster")
-    monsterSearchAndApply(term, remote=True)
+    monsterSearchAndApply(term, remote=Tre)
     sys.exit(1)
