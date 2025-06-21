@@ -1,0 +1,20 @@
+1. Begin by installing Python
+https://www.python.org/downloads/
+
+2. Complete an Easy Apply application on both Dice and Monster once, this will save your info for later
+
+3. Edit the config.yml file with your information
+
+4. Open a command line
+
+5. Run these commands
+python -m pip install --upgrade pip
+python -m pip install pyyaml urllib3 chromedriver-py selenium==3.141.0
+(if there is an error about chromedriver, try installing a version that matches what Google Chrome you already have installed)
+
+6. Use the "dir" (current directory) and "cd" (change directory) to browse until you are in the directory with RUN.py
+
+7. Run this command
+python RUN.py
+
+8. Enjoy the show
